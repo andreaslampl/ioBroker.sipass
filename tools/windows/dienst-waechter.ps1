@@ -278,14 +278,23 @@ function Update-List {
         [void]$lv.Items.Add($item)
     }
     $lv.EndUpdate()
-    $script:loading = $false
+    $script:loading = -not $form.Visible
     Update-Status
 }
 
-function Update-Status {
-    $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-    $active = if ($task) { "Überwachung aktiv (Aufgabe '$TaskName', jede Minute)" } else { 'Überwachung nicht eingerichtet' }
+# the task state is read only at the start and after saving / removing (Get-ScheduledTask is slow)
+$script:taskActive = $false
+function Update-TaskState {
+    $script:taskActive = [bool](Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue)
+}
+
+function Update-Count {
+    $active = if ($script:taskActive) { "Überwachung aktiv (Aufgabe '$TaskName', jede Minute)" } else { 'Überwachung nicht eingerichtet' }
     $status.Text = "$active  -  $($watch.Count) Dienst(e) angehakt"
+}
+
+function Update-Status {
+    Update-Count
     if (Test-Path $LogFile) {
         $logBox.Lines = @(Get-Content $LogFile -Tail 12 -Encoding UTF8)
         $logBox.SelectionStart = $logBox.Text.Length
@@ -303,9 +312,8 @@ $lv.Add_ItemChecked({
         if (-not $watch.ContainsKey($name)) { $watch[$name] = 0 }
     } else {
         [void]$watch.Remove($name)
-        $e.Item.SubItems[4].Text = ''
     }
-    Update-Status
+    Update-Count
 })
 
 $lv.Add_SelectedIndexChanged({
@@ -357,6 +365,7 @@ $btnSave.Add_Click({
         $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 5)
         $who = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
         Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger @($every, $boot) -Settings $settings -Principal $who -Force | Out-Null
+        $script:taskActive = $true
         # Windows' own recovery as well: restart after 1 minute when the service crashes
         foreach ($name in $watch.Keys) {
             & sc.exe failure "$name" reset= 86400 actions= restart/60000/restart/60000/restart/60000 | Out-Null
@@ -385,6 +394,7 @@ $btnRemove.Add_Click({
     $r = [System.Windows.Forms.MessageBox]::Show('Überwachung abschalten? (Die Auswahl bleibt gespeichert.)', 'Dienst-Wächter', 'YesNo')
     if ($r -eq 'Yes') {
         Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
+        $script:taskActive = $false
         Write-Log 'Überwachung entfernt'
         Update-Status
     }
@@ -396,12 +406,16 @@ $timer.Add_Tick({ Update-Status })
 $timer.Start()
 
 # always in front (a window started with administrator rights often opens behind the console)
+# while the window is created, the list reports every item's tick once -> ignored until Shown
 $form.Add_Shown({
+    $script:loading = $false
     $form.TopMost = $true
     $form.Activate()
     $form.TopMost = $false
 })
+Update-TaskState
 Update-List
+$script:loading = $true
 Write-Host 'Fenster ist offen.'
 [void]$form.ShowDialog()
 $timer.Stop()

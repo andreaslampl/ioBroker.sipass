@@ -61,6 +61,11 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
 - 0.1.3 field: owner only saw the black admin console (window most likely behind it) -> Shown: TopMost on/off + Activate;
   console says what happens; GUI part in try/catch with the error + Read-Host.
 
+- 0.1.4 field (stack from the owner's .NET dialog): the window never painted - ListView.OnItemChecked fires once per item when
+  the handle is created (hundreds of services) and each call ran Update-Status -> Get-ScheduledTask (slow CIM). Now ticks are
+  ignored until Form.Shown (`loading`), ItemChecked only updates the count, the task state is cached (`taskActive`, read at
+  start / set on save / remove).
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.

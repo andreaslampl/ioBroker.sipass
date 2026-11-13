@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "sipass",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "news": {
+      "0.1.4": {
+        "en": "Dienst-Waechter: the window hung while opening (every service reported its tick and the task was queried each time) - fixed",
+        "de": "Dienst-Wächter: Das Fenster hing beim Öffnen (jeder Dienst meldete seinen Haken, und jedes Mal wurde die Aufgabe abgefragt) – behoben"
+      },
       "0.1.3": {
         "en": "Dienst-Waechter: window opens in front, status and errors shown in the console",
         "de": "Dienst-Wächter: Fenster öffnet im Vordergrund, Status und Fehler im schwarzen Fenster"
