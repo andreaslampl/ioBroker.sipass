@@ -1,0 +1,124 @@
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "help": {
+      "type": "staticText",
+      "text": "Needs the SiPass Management Station API (licence + service on the SiPass server, port 8744). Best create an own SiPass operator for ioBroker: SiPass refuses a second login of the same operator.",
+      "xs": 12
+    },
+    "host": {
+      "type": "text",
+      "label": "Address of the SiPass server",
+      "help": "IP address or name, e.g. 192.168.1.x",
+      "newLine": true,
+      "xs": 12,
+      "sm": 5
+    },
+    "port": {
+      "type": "number",
+      "label": "Port",
+      "min": 1,
+      "max": 65535,
+      "default": 8744,
+      "xs": 6,
+      "sm": 2
+    },
+    "secure": {
+      "type": "checkbox",
+      "label": "HTTPS",
+      "default": true,
+      "xs": 6,
+      "sm": 2
+    },
+    "user": {
+      "type": "text",
+      "label": "SiPass operator",
+      "newLine": true,
+      "xs": 12,
+      "sm": 4
+    },
+    "password": {
+      "type": "password",
+      "label": "Password",
+      "xs": 12,
+      "sm": 4
+    },
+    "keep": {
+      "type": "number",
+      "label": "Events kept in events.history",
+      "min": 1,
+      "max": 500,
+      "default": 50,
+      "newLine": true,
+      "xs": 12,
+      "sm": 4
+    },
+    "rawLog": {
+      "type": "checkbox",
+      "label": "Log every message from SiPass (for the first tests)",
+      "help": "Shows in the log what SiPass sends - helpful while setting up, switch off later",
+      "default": true,
+      "xs": 12,
+      "sm": 8
+    },
+    "rulesHeader": {
+      "type": "header",
+      "text": "Rules: granted access -> write a data point",
+      "size": 3,
+      "newLine": true,
+      "xs": 12
+    },
+    "rulesHelp": {
+      "type": "staticText",
+      "text": "Example: granted access at reader 'Haustüre' (optional only for a person) -> nox_alarmzentrale.0.areas.1.command = 0 (disarm). Reader and person: part of the name is enough. Value empty = true.",
+      "xs": 12
+    },
+    "allowControl": {
+      "type": "checkbox",
+      "label": "Allow control (rules really write)",
+      "help": "Without the tick the rules only appear in the log - test first!",
+      "default": false,
+      "newLine": true,
+      "xs": 12
+    },
+    "rules": {
+      "type": "table",
+      "newLine": true,
+      "xs": 12,
+      "label": "Rules",
+      "items": [
+        {
+          "type": "text",
+          "attr": "name",
+          "title": "Name",
+          "width": "15%"
+        },
+        {
+          "type": "text",
+          "attr": "reader",
+          "title": "Reader (part of the name)",
+          "width": "20%"
+        },
+        {
+          "type": "text",
+          "attr": "person",
+          "title": "Person (optional)",
+          "width": "15%"
+        },
+        {
+          "type": "objectId",
+          "attr": "target",
+          "title": "Data point",
+          "width": "35%"
+        },
+        {
+          "type": "text",
+          "attr": "value",
+          "title": "Value",
+          "width": "15%"
+        }
+      ]
+    }
+  }
+}

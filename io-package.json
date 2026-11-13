@@ -1,0 +1,92 @@
+{
+  "common": {
+    "name": "sipass",
+    "version": "0.1.0",
+    "news": {
+      "0.1.0": {
+        "en": "First version: SiPass integrated via the Management Station API - readers, live access events (granted / denied), outstanding alarms, rules 'granted access -> write a data point' (only with 'allow control')",
+        "de": "Erste Version: SiPass integrated über die Management Station API – Leser, Buchungen live (gültig / abgewiesen), offene Alarme, Regeln „gültige Buchung → Datenpunkt schreiben“ (nur mit „Steuern erlauben“)"
+      }
+    },
+    "titleLang": {
+      "en": "SiPass integrated",
+      "de": "SiPass integrated"
+    },
+    "desc": {
+      "en": "SiPass integrated access control (Siemens / Acre) via the Management Station API: access events live, readers, alarms, rules",
+      "de": "Zutrittskontrolle SiPass integrated (Siemens / Acre) über die Management Station API: Buchungen live, Leser, Alarme, Regeln"
+    },
+    "authors": [
+      "andreaslampl"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "icon": "sipass.png",
+    "extIcon": "https://raw.githubusercontent.com/andreaslampl/ioBroker.sipass/main/admin/sipass.png",
+    "readme": "https://github.com/andreaslampl/ioBroker.sipass/blob/main/README.md",
+    "enabled": true,
+    "type": "alarm",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "adminUI": {
+      "config": "json"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.0.0"
+      }
+    ],
+    "tier": 2
+  },
+  "native": {
+    "host": "",
+    "port": 8744,
+    "secure": true,
+    "user": "",
+    "password": "",
+    "rawLog": true,
+    "keep": 50,
+    "allowControl": false,
+    "rules": []
+  },
+  "encryptedNative": [
+    "password"
+  ],
+  "protectedNative": [
+    "password"
+  ],
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Connected to SiPass",
+          "de": "Verbunden mit SiPass"
+        },
+        "type": "boolean",
+        "role": "indicator.connected",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
+}

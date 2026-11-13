@@ -1,0 +1,22 @@
+{
+  "Needs the SiPass Management Station API (licence + service on the SiPass server, port 8744). Best create an own SiPass operator for ioBroker: SiPass refuses a second login of the same operator.": "Needs the SiPass Management Station API (licence + service on the SiPass server, port 8744). Best create an own SiPass operator for ioBroker: SiPass refuses a second login of the same operator.",
+  "Address of the SiPass server": "Address of the SiPass server",
+  "IP address or name, e.g. 192.168.1.x": "IP address or name, e.g. 192.168.1.x",
+  "Port": "Port",
+  "HTTPS": "HTTPS",
+  "SiPass operator": "SiPass operator",
+  "Password": "Password",
+  "Events kept in events.history": "Events kept in events.history",
+  "Log every message from SiPass (for the first tests)": "Log every message from SiPass (for the first tests)",
+  "Shows in the log what SiPass sends - helpful while setting up, switch off later": "Shows in the log what SiPass sends - helpful while setting up, switch off later",
+  "Rules: granted access -> write a data point": "Rules: granted access -> write a data point",
+  "Example: granted access at reader 'Haustüre' (optional only for a person) -> nox_alarmzentrale.0.areas.1.command = 0 (disarm). Reader and person: part of the name is enough. Value empty = true.": "Example: granted access at reader 'Haustüre' (optional only for a person) -> nox_alarmzentrale.0.areas.1.command = 0 (disarm). Reader and person: part of the name is enough. Value empty = true.",
+  "Allow control (rules really write)": "Allow control (rules really write)",
+  "Without the tick the rules only appear in the log - test first!": "Without the tick the rules only appear in the log - test first!",
+  "Rules": "Rules",
+  "Name": "Name",
+  "Reader (part of the name)": "Reader (part of the name)",
+  "Person (optional)": "Person (optional)",
+  "Data point": "Data point",
+  "Value": "Value"
+}
