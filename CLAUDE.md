@@ -49,6 +49,15 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
   `install-watchdog.ps1` (scheduled task "SiPass Watchdog" every minute + at startup as SYSTEM, sc.exe failure restart/60000 x3,
   -Remove), ANLEITUNG.md. ASCII-only strings, saved with BOM + CRLF for Windows PowerShell 5.1. Not run on Windows here (no pwsh).
 
+- 0.1.2: owner wanted a window and other services too -> `tools/windows/dienst-waechter.ps1` replaces the 0.1.1 scripts: WinForms
+  window (self-elevates; ListView of all services with checkboxes, search, "nur überwachte", port per service via NumericUpDown,
+  save -> C:\ProgramData\DienstWaechter\config.json {services:[{name, display, port}]}, copies itself there, task
+  "Dienst-Waechter" every minute + at startup as SYSTEM running `-Run`, sc.exe failure restart x3; "Jetzt prüfen", log view,
+  remove task); `-Run` = Invoke-Check (start stopped non-disabled services, restart after 2 failed port checks, state.json,
+  missing services logged once). `Dienst-Waechter.cmd` launcher. UTF-8 with BOM + CRLF (umlauts, Windows PowerShell 5.1).
+  Checked: parser of pwsh 7.4 (scratchpad), -Run with mocked Get-Service/Start-Service/Restart-Service; the window itself not
+  run (no Windows here).
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.

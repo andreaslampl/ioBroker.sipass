@@ -1,55 +1,42 @@
-# SiPass-Watchdog (am SiPass-PC)
+# Dienst-Wächter (Windows)
 
-Startet SiPass-Dienste, die eigentlich laufen sollten (Starttyp „Automatisch“), aber stehen – jede Minute, auch wenn niemand
-angemeldet ist. Zusätzlich stellt es die **Windows-Wiederherstellung** der Dienste ein: Stürzt ein Dienst ab, startet Windows
-ihn nach 1 Minute selbst neu. Optional wird die **Management Station API** neu gestartet, wenn sie auf Port 8744 nicht mehr
-antwortet, obwohl der Dienst „läuft“.
+Kleines Programm mit Fenster für Windows-PCs (z. B. den SiPass-Server): Du hakst die **Dienste** an, die immer laufen sollen –
+steht einer, startet der Dienst-Wächter ihn **innerhalb einer Minute** wieder. Geht für **jeden Windows-Dienst** (SiPass,
+SQL Server, andere Programme). Zusätzlich stellt er die **Windows-Wiederherstellung** der Dienste ein (nach einem Absturz startet
+Windows sie nach 1 Minute selbst neu).
 
-Dienste, die deaktiviert oder auf „Manuell“ stehen, werden nicht angefasst.
+Optional pro Dienst ein **Port**: Antwortet der Dienst dort zweimal hintereinander nicht, obwohl er „läuft“ (hängt), wird er
+neu gestartet – z. B. die SiPass Management Station API auf Port **8744**.
+
+Es läuft im Hintergrund über die Aufgabenplanung (jede Minute und beim Hochfahren, als SYSTEM – auch wenn niemand angemeldet
+ist). Nichts zu installieren: PowerShell ist in Windows schon drin.
 
 ## 1. Dateien holen
 
-Am SiPass-PC einen Ordner anlegen, z. B. `C:\Temp\Watchdog`, und diese zwei Dateien hineinladen
-(Link öffnen → Rechtsklick → „Speichern unter“, Dateityp „Alle Dateien“):
+Am PC einen Ordner anlegen, z. B. `C:\Tools\Dienst-Waechter`, und diese zwei Dateien hineinladen
+(Link öffnen → Rechtsklick → „Speichern unter“, Dateityp „Alle Dateien“, Namen so lassen):
 
-- <https://raw.githubusercontent.com/andreaslampl/ioBroker.sipass/main/tools/windows/sipass-watchdog.ps1>
-- <https://raw.githubusercontent.com/andreaslampl/ioBroker.sipass/main/tools/windows/install-watchdog.ps1>
+- <https://raw.githubusercontent.com/andreaslampl/ioBroker.sipass/main/tools/windows/dienst-waechter.ps1>
+- <https://raw.githubusercontent.com/andreaslampl/ioBroker.sipass/main/tools/windows/Dienst-Waechter.cmd>
 
-## 2. Nachsehen, welche Dienste es findet
+## 2. Starten und Dienste wählen
 
-**PowerShell als Administrator** öffnen (Start → „PowerShell“ → Rechtsklick → „Als Administrator ausführen“):
+1. **Doppelklick auf `Dienst-Waechter.cmd`** – Windows fragt nach Administrator-Rechten → **Ja**.
+2. Es öffnet sich die Liste aller Dienste. Beim ersten Start sind die **SiPass-Dienste schon angehakt**.
+3. Mit **Suchen** findest du weitere (z. B. „SQL“ für den SQL Server von SiPass) – anhaken.
+4. Optional: einen Dienst **markieren** und unten den **Port** eintragen (z. B. 8744 für die Management Station API).
+5. **„Speichern und überwachen“** – fertig.
 
-```
-cd C:\Temp\Watchdog
-powershell -ExecutionPolicy Bypass -File .\sipass-watchdog.ps1 -List
-```
+Rot = angehakt, läuft aber gerade nicht. **„Jetzt prüfen“** startet stehende Dienste sofort. Unten im Fenster stehen die
+letzten Einträge des Protokolls.
 
-Es zeigt alle Dienste mit „SiPass“ im Namen, ihren Starttyp und ob sie laufen. Steht dort der Dienst der
-**Management Station API**, merke dir seinen **Namen** (die erste Spalte).
+## Ändern, Protokoll, Abschalten
 
-Läuft SiPass mit einer eigenen **SQL-Server-Instanz** auf demselben PC und soll die mit überwacht werden:
-`-Pattern "*SiPass*,MSSQL*"` anhängen (bei `-List` und bei der Installation).
-
-## 3. Einrichten
-
-```
-powershell -ExecutionPolicy Bypass -File .\install-watchdog.ps1
-```
-
-Mit Neustart der API, wenn Port 8744 nicht antwortet (Namen aus Schritt 2 einsetzen):
-
-```
-powershell -ExecutionPolicy Bypass -File .\install-watchdog.ps1 -ApiService "NAME-AUS-SCHRITT-2"
-```
-
-Fertig. In der **Aufgabenplanung** steht jetzt „SiPass Watchdog“ (jede Minute und beim Hochfahren).
-
-## Protokoll und Entfernen
-
-- Protokoll: `C:\ProgramData\SiPassWatchdog\watchdog.log` – dort steht jeder Neustart mit Uhrzeit.
-- Entfernen: `powershell -ExecutionPolicy Bypass -File .\install-watchdog.ps1 -Remove`
+- Ändern: wieder `Dienst-Waechter.cmd` starten, Haken setzen/entfernen, speichern.
+- Protokoll: Knopf **„Protokoll öffnen“** oder Datei `C:\ProgramData\DienstWaechter\waechter.log`.
+- Abschalten: **„Überwachung entfernen“** (die Auswahl bleibt gespeichert).
 
 ## Benachrichtigung in ioBroker
 
-Der ioBroker-Adapter meldet sich nach einem SiPass-Neustart von selbst wieder an. Wer eine Nachricht möchte, wenn SiPass länger
-weg ist: in SmartView eine Push-Regel auf `sipass.0.info.connection` = false, „länger als“ z. B. 5 Minuten.
+Der SiPass-Adapter meldet sich nach einem SiPass-Neustart von selbst wieder an. Für eine Nachricht, wenn SiPass länger weg ist:
+in SmartView eine Push-Regel auf `sipass.0.info.connection` = false, „länger als“ z. B. 5 Minuten.

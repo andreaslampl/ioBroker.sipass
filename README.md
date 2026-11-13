@@ -52,8 +52,8 @@ iobroker url https://github.com/andreaslampl/ioBroker.sipass
 
 ## SiPass-Dienste überwachen (Watchdog)
 
-Bleibt SiPass öfter stehen: am SiPass-PC den Watchdog einrichten – er startet stehende SiPass-Dienste jede Minute wieder und
-stellt die Windows-Wiederherstellung der Dienste ein. Anleitung: [`tools/windows/ANLEITUNG.md`](tools/windows/ANLEITUNG.md).
+Bleibt SiPass öfter stehen: am SiPass-PC den **Dienst-Wächter** einrichten – ein kleines Programm mit Fenster, in dem man
+beliebige Windows-Dienste anhakt; stehen sie, startet er sie jede Minute wieder (optional mit Port-Prüfung). Anleitung: [`tools/windows/ANLEITUNG.md`](tools/windows/ANLEITUNG.md).
 
 ## Lizenz
 

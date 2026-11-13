@@ -1,6 +1,6 @@
 {
   "name": "iobroker.sipass",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "SiPass integrated (Siemens / Acre) access control for ioBroker via the Management Station API",
   "author": "andreaslampl",
   "license": "MIT",

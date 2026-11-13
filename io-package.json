@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "sipass",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "news": {
+      "0.1.2": {
+        "en": "Watchdog with a window (\"Dienst-Waechter\"): choose any Windows services to keep running, optional port check per service",
+        "de": "Watchdog mit Fenster („Dienst-Wächter“): beliebige Windows-Dienste auswählen, die laufen sollen, optional Port-Prüfung je Dienst"
+      },
       "0.1.1": {
         "en": "Watchdog for the SiPass PC (tools/windows): restarts stopped SiPass services, Windows recovery, optional API port check",
         "de": "Watchdog für den SiPass-PC (tools/windows): startet stehende SiPass-Dienste, Windows-Wiederherstellung, optional Prüfung des API-Ports"
