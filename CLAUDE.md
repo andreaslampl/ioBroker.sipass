@@ -66,6 +66,8 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
   ignored until Form.Shown (`loading`), ItemChecked only updates the count, the task state is cached (`taskActive`, read at
   start / set on save / remove).
 
+- 0.1.4 field, confirmed: the Dienst-Waechter window opens on the owner's SiPass PC (Windows 11, PowerShell 5.1).
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.
