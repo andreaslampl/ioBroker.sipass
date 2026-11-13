@@ -43,6 +43,12 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
 - 0.1.0 field: on the owner's ioBroker (js-controller 7.2.5, Node 22) login, 10 readers from /AccessPoints and the notifier
   connection work against the real SiPass 3.0. Waiting for the first booking's raw log line.
 
+- 0.1.1: owner says SiPass services often stop -> `tools/windows/` (Windows side, the adapter cannot restart Windows services):
+  `sipass-watchdog.ps1` (services matching -Pattern '*SiPass*[,…]' with StartMode Auto and not running -> Start-Service; optional
+  -ApiService restarted after 2 failed TCP checks of -Port 8744; log C:\ProgramData\SiPassWatchdog\watchdog.log, -List),
+  `install-watchdog.ps1` (scheduled task "SiPass Watchdog" every minute + at startup as SYSTEM, sc.exe failure restart/60000 x3,
+  -Remove), ANLEITUNG.md. ASCII-only strings, saved with BOM + CRLF for Windows PowerShell 5.1. Not run on Windows here (no pwsh).
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.

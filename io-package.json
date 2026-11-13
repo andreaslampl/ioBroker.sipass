@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "sipass",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "news": {
+      "0.1.1": {
+        "en": "Watchdog for the SiPass PC (tools/windows): restarts stopped SiPass services, Windows recovery, optional API port check",
+        "de": "Watchdog für den SiPass-PC (tools/windows): startet stehende SiPass-Dienste, Windows-Wiederherstellung, optional Prüfung des API-Ports"
+      },
       "0.1.0": {
         "en": "First version: SiPass integrated via the Management Station API - readers, live access events (granted / denied), outstanding alarms, rules 'granted access -> write a data point' (only with 'allow control')",
         "de": "Erste Version: SiPass integrated über die Management Station API – Leser, Buchungen live (gültig / abgewiesen), offene Alarme, Regeln „gültige Buchung → Datenpunkt schreiben“ (nur mit „Steuern erlauben“)"
