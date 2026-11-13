@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "sipass",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "news": {
+      "0.1.3": {
+        "en": "Dienst-Waechter: window opens in front, status and errors shown in the console",
+        "de": "Dienst-Wächter: Fenster öffnet im Vordergrund, Status und Fehler im schwarzen Fenster"
+      },
       "0.1.2": {
         "en": "Watchdog with a window (\"Dienst-Waechter\"): choose any Windows services to keep running, optional port check per service",
         "de": "Watchdog mit Fenster („Dienst-Wächter“): beliebige Windows-Dienste auswählen, die laufen sollen, optional Port-Prüfung je Dienst"

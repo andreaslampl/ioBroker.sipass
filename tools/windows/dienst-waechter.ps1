@@ -122,6 +122,8 @@ if (-not $admin) {
     exit 0
 }
 
+Write-Host 'Dienst-Wächter wird geöffnet …  (dieses schwarze Fenster offen lassen)'
+try {
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -393,6 +395,19 @@ $timer.Interval = 15000
 $timer.Add_Tick({ Update-Status })
 $timer.Start()
 
+# always in front (a window started with administrator rights often opens behind the console)
+$form.Add_Shown({
+    $form.TopMost = $true
+    $form.Activate()
+    $form.TopMost = $false
+})
 Update-List
+Write-Host 'Fenster ist offen.'
 [void]$form.ShowDialog()
 $timer.Stop()
+} catch {
+    Write-Host ''
+    Write-Host "FEHLER: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Zeile $($_.InvocationInfo.ScriptLineNumber): $($_.InvocationInfo.Line.Trim())"
+    Read-Host 'Enter drücken zum Schließen'
+}

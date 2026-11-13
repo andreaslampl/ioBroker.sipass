@@ -58,6 +58,9 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
   Checked: parser of pwsh 7.4 (scratchpad), -Run with mocked Get-Service/Start-Service/Restart-Service; the window itself not
   run (no Windows here).
 
+- 0.1.3 field: owner only saw the black admin console (window most likely behind it) -> Shown: TopMost on/off + Activate;
+  console says what happens; GUI part in try/catch with the error + Read-Host.
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.
