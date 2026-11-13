@@ -40,6 +40,8 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
 
 - 0.1.0: built from the owner's swagger file and PowerShell checks; not yet run against the real SiPass. First field step: install,
   book once with a card, send the "SiPass meldet messageHub.<method>" log line -> adjust parsing if needed.
+- 0.1.0 field: on the owner's ioBroker (js-controller 7.2.5, Node 22) login, 10 readers from /AccessPoints and the notifier
+  connection work against the real SiPass 3.0. Waiting for the first booking's raw log line.
 
 ## Conventions
 
