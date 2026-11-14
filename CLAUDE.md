@@ -71,6 +71,14 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
 - 0.1.4 field: bookings arrive in ioBroker from the real SiPass 3.0 (owner confirmed); hub method name / exact payload not yet
   noted - ask for one raw "SiPass meldet messageHub.<method>" line if parsing ever needs changes.
 
+- 0.2.0 field payload (owner's SiPass 3.0): hub "MessageHub", method "acceptMessage", A = [JSON string of an array]. Access event:
+  {CardNumber, CardTechnology, FacilityCode, FirstName, LastName, ObjectToken (= reader token from /AccessPoints), ObjectType 7,
+  State 5, StateType 1, …, Description "Gültiger Ausweis: <card> Firmencode 0", Location (reader name), LogTime, OccurenceTime,
+  SubType 12, Token (message id), Type 1, OperatorDetail} - NO ObjectState. -> events.js: result from the text (DENIED_TEXT first,
+  "Ungültiger Ausweis" contains "gültiger Ausweis"; denied wording not yet seen in the field), person = First + Last name, reader =
+  ObjectToken, `maskCards()` (digit runs >= 8 -> …last4) for states AND the raw log, Service/SubType 35 "Alive" (Location
+  "DAMS-Service") ignored. States access.*Person, readers.*.lastPerson. Test with the real shape (anonymised).
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.

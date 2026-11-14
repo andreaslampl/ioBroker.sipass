@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "sipass",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "news": {
+      "0.2.0": {
+        "en": "Bookings as SiPass 3.0 really sends them: person (first + last name), granted / denied from the text, reader by its token, card numbers shortened to the last 4 digits, Alive messages ignored; states access.grantedPerson / deniedPerson, readers.*.lastPerson",
+        "de": "Buchungen so, wie SiPass 3.0 sie wirklich schickt: Person (Vor- und Nachname), gültig / abgewiesen aus dem Text, Leser über seine Nummer, Kartennummern auf die letzten 4 Stellen gekürzt, Alive-Meldungen ignoriert; neue Datenpunkte access.grantedPerson / deniedPerson, readers.*.lastPerson"
+      },
       "0.1.4": {
         "en": "Dienst-Waechter: the window hung while opening (every service reported its tick and the task was queried each time) - fixed",
         "de": "Dienst-Wächter: Das Fenster hing beim Öffnen (jeder Dienst meldete seinen Haken, und jedes Mal wurde die Aufgabe abgefragt) – behoben"

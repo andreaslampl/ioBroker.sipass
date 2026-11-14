@@ -66,7 +66,7 @@ test('adapter: login, readers, live events, history, alarms', async t => {
     await until(() => adapter.val('access.deniedReader') === 'Gerätehütte Leser');
     assert.equal(adapter.val('readers.19.lastText'), 'Zutritt verweigert');
     assert.equal(JSON.parse(adapter.val('events.history')).length, 2);
-    assert.ok(adapter.logs.some(l => l.startsWith('info: SiPass meldet messageHub.onMessage')), 'raw messages are logged for the first tests');
+    assert.ok(adapter.logs.some(l => l.startsWith('info: SiPass meldet MessageHub.acceptMessage')), 'raw messages are logged for the first tests');
     assert.equal(adapter.val('alarms.count'), 0);
 });
 
@@ -113,4 +113,36 @@ test('adapter: wrong password is reported clearly', async t => {
     const { adapter } = await start(t, { password: 'falsch' });
     await until(() => adapter.logs.some(l => l.includes('Benutzername oder Passwort falsch')));
     assert.equal(adapter.val('info.connection'), false);
+});
+
+test('adapter: real SiPass 3.0 message shape (no ObjectState, result in the text, person, card number masked, Alive ignored)', async t => {
+    const { s, adapter } = await start(t, {
+        allowControl: true,
+        rules: [{ name: 'NOX', reader: 'Haustüre', person: 'Muster', target: 'nox_alarmzentrale.0.areas.1.command', value: '0' }],
+    });
+    adapter.foreign['nox_alarmzentrale.0.areas.1.command'] = { type: 'number' };
+    await until(() => adapter.val('info.connection') === true);
+    // as logged on the owner's SiPass 3.0 (names / card number replaced): one JSON string with an array
+    const booking = (desc, readerToken, location) => JSON.stringify([{
+        CardNumber: '1234567890123456', CardTechnology: 26, FacilityCode: 0, FirstName: 'Max', LastName: 'Muster',
+        ObjectToken: readerToken, ObjectType: 7, State: 5, StateType: 1, PointDisabledState: 1, CommsStatus: 1,
+        Description: desc, Location: location, LogTime: '2026-11-15T00:15:09', OccurenceTime: '2026-11-15T00:15:07',
+        SubType: 12, Token: '432', Type: 1, OperatorDetail: { FirstName: 'Max', LastName: 'Muster' },
+    }]);
+    s.push(JSON.stringify([{ Description: '', Location: 'DAMS-Service', LogTime: '2026-11-15T00:13:05', OccurenceTime: '2026-11-15T00:13:05', SubType: 35, Token: '', Type: 5 }]));
+    s.push(booking('Gültiger Ausweis: 1234567890123456 Firmencode 0', '1', 'Haustüre Tür 1 Leser'));
+    await until(() => adapter.val('access.grantedPerson') === 'Max Muster');
+    assert.equal(adapter.val('access.grantedReader'), 'Haustüre Tür 1 Leser');
+    assert.equal(adapter.val('access.grantedText'), 'Zutritt gewährt – Haustüre Tür 1 Leser – Max Muster');
+    assert.equal(adapter.val('readers.1.lastPerson'), 'Max Muster');
+    assert.equal(adapter.val('readers.1.lastDescription'), 'Gültiger Ausweis: …3456 Firmencode 0');
+    await until(() => adapter.states['nox_alarmzentrale.0.areas.1.command']);
+    assert.deepEqual(adapter.states['nox_alarmzentrale.0.areas.1.command'], { val: 0, ack: false });
+    // denied: "Ungültiger Ausweis" must not count as granted
+    s.push(booking('Ungültiger Ausweis: 1234567890123456 Firmencode 0', '19', 'Gerätehütte Leser'));
+    await until(() => adapter.val('access.deniedReader') === 'Gerätehütte Leser');
+    const history = JSON.parse(adapter.val('events.history'));
+    assert.equal(history.length, 2, 'Alive is not an event');
+    const all = JSON.stringify(adapter.states) + adapter.logs.join('\n');
+    assert.ok(!all.includes('1234567890123456'), 'no full card number in states or logs');
 });

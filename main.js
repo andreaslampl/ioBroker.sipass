@@ -27,10 +27,12 @@ const OBJECTS = {
     'access.granted': ro('Letzte gültige Buchung', 'string', 'json'),
     'access.grantedText': ro('Letzte gültige Buchung (Text)', 'string', 'text'),
     'access.grantedReader': ro('Letzte gültige Buchung: Leser', 'string', 'text'),
+    'access.grantedPerson': ro('Letzte gültige Buchung: Person', 'string', 'text'),
     'access.grantedTime': ro('Letzte gültige Buchung: Zeit', 'number', 'date'),
     'access.denied': ro('Letzte abgewiesene Buchung', 'string', 'json'),
     'access.deniedText': ro('Letzte abgewiesene Buchung (Text)', 'string', 'text'),
     'access.deniedReader': ro('Letzte abgewiesene Buchung: Leser', 'string', 'text'),
+    'access.deniedPerson': ro('Letzte abgewiesene Buchung: Person', 'string', 'text'),
     'access.deniedTime': ro('Letzte abgewiesene Buchung: Zeit', 'number', 'date'),
     alarms: { type: 'channel', common: { name: 'Offene Alarme' }, native: {} },
     'alarms.count': ro('Anzahl offener Alarme', 'number', 'value'),
@@ -43,6 +45,7 @@ const READER_STATES = {
     lastText: ro('Letztes Ereignis', 'string', 'text'),
     lastState: ro('Letztes Ereignis (SiPass)', 'string', 'text'),
     lastDescription: ro('Letzte Meldung', 'string', 'text'),
+    lastPerson: ro('Letzte Person', 'string', 'text'),
     lastTime: ro('Letztes Ereignis: Zeit', 'number', 'date'),
     lastGranted: ro('Letzte gültige Buchung: Zeit', 'number', 'date'),
     lastDenied: ro('Letzte abgewiesene Buchung: Zeit', 'number', 'date'),
@@ -227,23 +230,31 @@ class SiPass extends utils.Adapter {
     }
 
     onMessage(hub, method, args) {
-        const raw = JSON.stringify({ hub, method, args });
+        const found = E.messages(args);
+        const evs = found.map(m => E.normalize(m));
+        // card numbers do not belong into the log / states
+        const raw = E.maskCards(JSON.stringify({ hub, method, args }));
+        if (evs.length && evs.every(ev => ev.alive)) {
+            this.log.debug(`SiPass lebt (${hub}.${method})`);
+            return;
+        }
         if (this.config.rawLog !== false) {
             this.log.info(`SiPass meldet ${hub}.${method}: ${raw.slice(0, 2000)}`);
         } else {
             this.log.debug(`SiPass meldet ${hub}.${method}: ${raw.slice(0, 2000)}`);
         }
         this.setState('info.lastRaw', raw.slice(0, 20000), true);
-        for (const m of E.messages(args)) {
-            this.onEvent(E.normalize(m)).catch(err => this.log.warn(`Ereignis: ${err.message}`));
+        for (const ev of evs.filter(e => !e.alive)) {
+            this.onEvent(ev).catch(err => this.log.warn(`Ereignis: ${err.message}`));
         }
     }
 
     async onEvent(ev) {
         const reader = this.readerOf(ev);
         const where = reader ? reader.name : ev.location;
-        const line = [ev.text, where, ev.description].filter(Boolean).join(' – ');
-        const entry = { time: ev.time, type: ev.type, state: ev.state, text: ev.text, reader: where, description: ev.description, granted: ev.granted, denied: ev.denied };
+        // "Zutritt gewährt – Geräteschuppen Leser – Max Muster" (the card text only when no person is known)
+        const line = [ev.text, where, ev.person || ev.description].filter(Boolean).join(' – ');
+        const entry = { time: ev.time, type: ev.type, state: ev.state, text: ev.text, reader: where, person: ev.person, description: ev.description, granted: ev.granted, denied: ev.denied };
         this.history.unshift(entry);
         this.history = this.history.slice(0, Math.max(1, Math.min(500, Number(this.config.keep) || 50)));
         await this.setState('events.last', JSON.stringify(entry), true);
@@ -255,6 +266,7 @@ class SiPass extends utils.Adapter {
             await this.setState(`${base}.lastText`, ev.text, true);
             await this.setState(`${base}.lastState`, ev.state, true);
             await this.setState(`${base}.lastDescription`, ev.description, true);
+            await this.setState(`${base}.lastPerson`, ev.person, true);
             await this.setState(`${base}.lastTime`, ev.time, true);
             if (ev.granted) {
                 await this.setState(`${base}.lastGranted`, ev.time, true);
@@ -268,6 +280,7 @@ class SiPass extends utils.Adapter {
                 await this.setState(`access.${kind}`, JSON.stringify(entry), true);
                 await this.setState(`access.${kind}Text`, line, true);
                 await this.setState(`access.${kind}Reader`, where, true);
+                await this.setState(`access.${kind}Person`, ev.person, true);
                 await this.setState(`access.${kind}Time`, ev.time, true);
             }
         }
@@ -301,7 +314,7 @@ class SiPass extends utils.Adapter {
                 }
                 const val = typed(rule.value, obj.common && obj.common.type);
                 await this.setForeignStateAsync(target, val, false);
-                this.log.info(`${label}: ${target} = ${JSON.stringify(val)} (gültige Buchung ${readerName || ev.location}${ev.description ? `: ${ev.description}` : ''})`);
+                this.log.info(`${label}: ${target} = ${JSON.stringify(val)} (gültige Buchung ${readerName || ev.location}${ev.person ? `: ${ev.person}` : ''})`);
             } catch (err) {
                 this.log.warn(`${label}: ${err.message}`);
             }

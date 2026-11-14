@@ -23,7 +23,7 @@ function fakeSiPass({ user = 'iobroker', password = 'geheim', timeout = 300 } = 
             { Token: '19', Name: 'Gerätehütte Leser', OperationMode: 'AccCardOnly = 0' },
         ],
         alarms: [],
-        hubMethod: 'onMessage',
+        hubMethod: 'acceptMessage',
     };
     const json = (res, status, body) => {
         res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -121,7 +121,7 @@ function fakeSiPass({ user = 'iobroker', password = 'geheim', timeout = 300 } = 
         }),
         /** SiPass sends a message to every notifier client */
         push(...args) {
-            const frame = JSON.stringify({ C: `d-${++n}`, M: [{ H: 'messageHub', M: s.hubMethod, A: args }] });
+            const frame = JSON.stringify({ C: `d-${++n}`, M: [{ H: 'MessageHub', M: s.hubMethod, A: args }] });
             for (const ws of s.sockets) {
                 ws.send(frame);
             }

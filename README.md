@@ -9,9 +9,9 @@ Zutrittskontrolle **SiPass integrated** (Siemens, heute Acre Security) in ioBrok
 - **Regeln:** gültige Buchung an Leser X (optional nur für Person Y) → Datenpunkt schreiben, z. B. die NOX-Alarmanlage
   unscharf schalten. Nur mit dem Haken **„Steuern erlauben“** (ohne Haken stehen sie nur im Log).
 
-Getestet mit einer nachgebauten SiPass-Schnittstelle (Anmeldung und Notifier so, wie sie an SiPass 3.0 beobachtet wurden).
-Wie SiPass die Buchungen genau schickt, ist nicht dokumentiert – deshalb schreibt der Adapter anfangs **jede Meldung ins
-Log** (Einstellung „Jede Meldung von SiPass ins Log schreiben“).
+Läuft mit SiPass integrated 3.0. Kartennummern werden nirgends ganz gespeichert (nur die letzten 4 Stellen). Zum Einrichten
+kann jede Meldung von SiPass ins Log geschrieben werden (Einstellung „Jede Meldung von SiPass ins Log schreiben“) – danach
+wieder ausschalten.
 
 ## Voraussetzungen
 
@@ -43,10 +43,10 @@ iobroker url https://github.com/andreaslampl/ioBroker.sipass
 | Datenpunkt | Inhalt |
 |---|---|
 | `info.connection` | angemeldet und Live-Meldungen verbunden |
-| `access.grantedText` / `grantedReader` / `grantedTime` | letzte gültige Buchung |
-| `access.deniedText` / `deniedReader` / `deniedTime` | letzte abgewiesene Buchung |
+| `access.grantedText` / `grantedReader` / `grantedPerson` / `grantedTime` | letzte gültige Buchung, z. B. „Zutritt gewährt – Haustüre Tür 1 Leser – Max Muster“ |
+| `access.deniedText` / `deniedReader` / `deniedPerson` / `deniedTime` | letzte abgewiesene Buchung |
 | `events.lastText`, `events.history` | letztes Ereignis, Liste der letzten Ereignisse (JSON) |
-| `readers.<Nr>.*` | Name, letztes Ereignis, letzte gültige / abgewiesene Buchung |
+| `readers.<Nr>.*` | Name, letztes Ereignis, letzte Person, letzte gültige / abgewiesene Buchung |
 | `alarms.count`, `alarms.list` | offene Alarme in SiPass (jede Minute) |
 | `info.lastRaw` | letzte Meldung von SiPass unverändert (zur Fehlersuche) |
 
