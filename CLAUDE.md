@@ -68,6 +68,9 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
 
 - 0.1.4 field, confirmed: the Dienst-Waechter window opens on the owner's SiPass PC (Windows 11, PowerShell 5.1).
 
+- 0.1.4 field: bookings arrive in ioBroker from the real SiPass 3.0 (owner confirmed); hub method name / exact payload not yet
+  noted - ask for one raw "SiPass meldet messageHub.<method>" line if parsing ever needs changes.
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.
