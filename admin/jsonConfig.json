@@ -119,6 +119,88 @@
           "width": "15%"
         }
       ]
+    },
+    "alarmHeader": {
+      "type": "header",
+      "text": "Access control & alarm system",
+      "size": 4,
+      "newLine": true
+    },
+    "alarmHelp": {
+      "type": "staticText",
+      "text": "Per area of the alarm system (e.g. NOX: nox_alarmzentrale.0.areas.1.armed): a valid booking at a 'disarm' reader disarms, at an 'arm' reader arms (only when the area is ready). 'Card twice' = the same person books twice within 10 s at a disarm reader while unarmed -> armed. Persons: parts of the name, comma separated (empty = everybody with a valid card). Times e.g. 'Mo-Fr 06:00-22:00; Sa 08:00-12:00' (empty = always). Needs 'Allow control'. A card alone is one factor - readers with card + PIN are safer.",
+      "xs": 12
+    },
+    "alarmLinks": {
+      "type": "table",
+      "xs": 12,
+      "label": "Areas",
+      "items": [
+        {
+          "type": "checkbox",
+          "attr": "enabled",
+          "title": "Active",
+          "width": "5%",
+          "default": true
+        },
+        {
+          "type": "text",
+          "attr": "name",
+          "title": "Name",
+          "width": "10%",
+          "default": ""
+        },
+        {
+          "type": "objectId",
+          "attr": "armed",
+          "title": "Data point 'armed' of the area",
+          "width": "20%",
+          "default": ""
+        },
+        {
+          "type": "text",
+          "attr": "disarmReaders",
+          "title": "Disarm at readers",
+          "width": "14%",
+          "default": ""
+        },
+        {
+          "type": "text",
+          "attr": "armReaders",
+          "title": "Arm at readers",
+          "width": "14%",
+          "default": ""
+        },
+        {
+          "type": "checkbox",
+          "attr": "double",
+          "title": "Card twice = arm",
+          "width": "7%",
+          "default": false
+        },
+        {
+          "type": "text",
+          "attr": "persons",
+          "title": "Persons (empty = all)",
+          "width": "14%",
+          "default": ""
+        },
+        {
+          "type": "text",
+          "attr": "times",
+          "title": "Times (empty = always)",
+          "width": "16%",
+          "default": ""
+        }
+      ]
+    },
+    "alarmNotify": {
+      "type": "objectId",
+      "label": "Messages to (e.g. smartview.0.push.message)",
+      "xs": 12,
+      "sm": 8,
+      "md": 6,
+      "newLine": true
     }
   }
 }

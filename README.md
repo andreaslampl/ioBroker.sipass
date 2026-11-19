@@ -50,6 +50,36 @@ iobroker url https://github.com/andreaslampl/ioBroker.sipass
 | `alarms.count`, `alarms.list` | offene Alarme in SiPass (jede Minute) |
 | `info.lastRaw` | letzte Meldung von SiPass unverändert (zur Fehlersuche) |
 
+## Zutritt & Alarmanlage
+
+Zutrittskontrolle und Einbruchmeldeanlage arbeiten ohne Verkabelung zusammen, z. B. mit dem NOX-Adapter
+(`nox_alarmzentrale.0.areas.N.armed`). Pro Bereich eine Zeile im Abschnitt „Zutritt & Alarmanlage“:
+
+| Spalte | Bedeutung |
+| --- | --- |
+| Datenpunkt „scharf“ | z. B. `nox_alarmzentrale.0.areas.1.armed` (true = scharf) |
+| Unscharf an Lesern | gültige Buchung dort → **unscharf** (nur wenn scharf), z. B. `Haustüre` |
+| Scharf an Lesern | gültige Buchung dort → **scharf**, z. B. ein Leser innen am Ausgang |
+| Karte zweimal = scharf | dieselbe Person bucht innerhalb von 10 s zweimal an einem Unscharf-Leser, während der Bereich unscharf ist → scharf |
+| Personen | Teile des Namens, mit Komma getrennt (leer = alle mit gültiger Karte) |
+| Zeiten | z. B. `Mo-Fr 06:00-22:00; Sa 08:00-12:00` (leer = immer) |
+
+- **Scharf nur, wenn bereit:** Ist ein Melder offen (`ready` = false), wird nicht scharf geschaltet. Es kommt die
+  Meldung „EG NICHT scharf – offen: Fenster Küche“.
+- **Kontrolle:** Nach dem Schalten prüft der Adapter, ob es geklappt hat (unscharf nach 8 s, scharf nach 30 s, wegen
+  der Ausgangsverzögerung). Danach kommt die Meldung „EG unscharf durch Max Muster (Haustüre)“ oder „… hat NICHT
+  geklappt“.
+- **Abgewiesene Buchung** an einem dieser Leser, während der Bereich scharf ist → Meldung.
+- **Meldungen an:** ein Datenpunkt, z. B. `smartview.0.push.message`. SmartView schickt sie als Push / Telegram /
+  WhatsApp und zeigt sie in der Meldungsliste. Jeder andere Datenpunkt bekommt den Text.
+- Datenpunkte `alarm.lastAction`, `alarm.lastText`, `alarm.lastPerson`, `alarm.lastArea`, `alarm.lastTime`.
+- Schaltet nur mit **„Steuern erlauben“**. Ohne den Haken steht im Log nur, was passieren würde – gut zum Ausprobieren.
+- Eine abgewiesene Buchung schaltet nie. Eine Karte allein ist nur ein Faktor: Für das Unscharfschalten sind Leser
+  mit **Karte + PIN** (in SiPass einstellbar) sicherer. Bei Anlagen nach EN 50131 / VdS ist das keine zugelassene
+  Schalteinrichtung.
+- Die bisherigen **Regeln** gibt es weiterhin. Für dieselbe Aufgabe bitte nicht beides eintragen, sonst wird doppelt
+  geschaltet.
+
 ## SiPass-Dienste überwachen (Watchdog)
 
 Bleibt SiPass öfter stehen: am SiPass-PC den **Dienst-Wächter** einrichten – ein kleines Programm mit Fenster, in dem man

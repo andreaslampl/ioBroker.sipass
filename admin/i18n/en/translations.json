@@ -18,5 +18,16 @@
   "Reader (part of the name)": "Reader (part of the name)",
   "Person (optional)": "Person (optional)",
   "Data point": "Data point",
-  "Value": "Value"
+  "Value": "Value",
+  "Access control & alarm system": "Access control & alarm system",
+  "Per area of the alarm system (e.g. NOX: nox_alarmzentrale.0.areas.1.armed): a valid booking at a 'disarm' reader disarms, at an 'arm' reader arms (only when the area is ready). 'Card twice' = the same person books twice within 10 s at a disarm reader while unarmed -> armed. Persons: parts of the name, comma separated (empty = everybody with a valid card). Times e.g. 'Mo-Fr 06:00-22:00; Sa 08:00-12:00' (empty = always). Needs 'Allow control'. A card alone is one factor - readers with card + PIN are safer.": "Per area of the alarm system (e.g. NOX: nox_alarmzentrale.0.areas.1.armed): a valid booking at a 'disarm' reader disarms, at an 'arm' reader arms (only when the area is ready). 'Card twice' = the same person books twice within 10 s at a disarm reader while unarmed -> armed. Persons: parts of the name, comma separated (empty = everybody with a valid card). Times e.g. 'Mo-Fr 06:00-22:00; Sa 08:00-12:00' (empty = always). Needs 'Allow control'. A card alone is one factor - readers with card + PIN are safer.",
+  "Areas": "Areas",
+  "Active": "Active",
+  "Data point 'armed' of the area": "Data point 'armed' of the area",
+  "Disarm at readers": "Disarm at readers",
+  "Arm at readers": "Arm at readers",
+  "Card twice = arm": "Card twice = arm",
+  "Persons (empty = all)": "Persons (empty = all)",
+  "Times (empty = always)": "Times (empty = always)",
+  "Messages to (e.g. smartview.0.push.message)": "Messages to (e.g. smartview.0.push.message)"
 }

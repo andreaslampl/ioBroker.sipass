@@ -164,6 +164,9 @@ class FakeAdapter extends EventEmitter {
     async getForeignObjectAsync(id) {
         return this.foreign[id] ? { common: this.foreign[id] } : null;
     }
+    async getForeignStateAsync(id) {
+        return this.states[id] || null;
+    }
     async setForeignStateAsync(id, val, ack) {
         this.states[id] = { val, ack: Boolean(ack) };
     }

@@ -18,5 +18,16 @@
   "Reader (part of the name)": "Leser (Teil des Namens)",
   "Person (optional)": "Person (optional)",
   "Data point": "Datenpunkt",
-  "Value": "Wert"
+  "Value": "Wert",
+  "Access control & alarm system": "Zutritt & Alarmanlage",
+  "Per area of the alarm system (e.g. NOX: nox_alarmzentrale.0.areas.1.armed): a valid booking at a 'disarm' reader disarms, at an 'arm' reader arms (only when the area is ready). 'Card twice' = the same person books twice within 10 s at a disarm reader while unarmed -> armed. Persons: parts of the name, comma separated (empty = everybody with a valid card). Times e.g. 'Mo-Fr 06:00-22:00; Sa 08:00-12:00' (empty = always). Needs 'Allow control'. A card alone is one factor - readers with card + PIN are safer.": "Pro Bereich der Alarmanlage (z. B. NOX: nox_alarmzentrale.0.areas.1.armed): Eine gültige Buchung an einem Leser bei „Unscharf an Lesern“ schaltet unscharf, an einem Leser bei „Scharf an Lesern“ scharf (nur wenn der Bereich scharfschaltbereit ist). „Karte zweimal“ = dieselbe Person bucht innerhalb von 10 s zweimal an einem Unscharf-Leser, während der Bereich unscharf ist -> scharf. Personen: Teile des Namens, mit Komma getrennt (leer = alle mit gültiger Karte). Zeiten z. B. „Mo-Fr 06:00-22:00; Sa 08:00-12:00“ (leer = immer). Braucht „Steuern erlauben“. Eine Karte allein ist nur ein Faktor – Leser mit Karte + PIN sind sicherer.",
+  "Areas": "Bereiche",
+  "Active": "Aktiv",
+  "Data point 'armed' of the area": "Datenpunkt „scharf“ des Bereichs",
+  "Disarm at readers": "Unscharf an Lesern",
+  "Arm at readers": "Scharf an Lesern",
+  "Card twice = arm": "Karte zweimal = scharf",
+  "Persons (empty = all)": "Personen (leer = alle)",
+  "Times (empty = always)": "Zeiten (leer = immer)",
+  "Messages to (e.g. smartview.0.push.message)": "Meldungen an (z. B. smartview.0.push.message)"
 }

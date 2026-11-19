@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "sipass",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "news": {
+      "0.3.0": {
+        "en": "Access control & alarm system: per area disarm / arm at chosen readers (persons, times, card twice), only when ready, check afterwards, messages (e.g. SmartView push) with who switched, denied booking while armed",
+        "de": "Zutritt & Alarmanlage: pro Bereich unscharf / scharf an gewählten Lesern (Personen, Zeiten, Karte zweimal), scharf nur wenn bereit, Kontrolle danach, Meldungen (z. B. SmartView-Push) mit wer geschaltet hat, abgewiesene Buchung bei scharfer Anlage"
+      },
       "0.2.0": {
         "en": "Bookings as SiPass 3.0 really sends them: person (first + last name), granted / denied from the text, reader by its token, card numbers shortened to the last 4 digits, Alive messages ignored; states access.grantedPerson / deniedPerson, readers.*.lastPerson",
         "de": "Buchungen so, wie SiPass 3.0 sie wirklich schickt: Person (Vor- und Nachname), gültig / abgewiesen aus dem Text, Leser über seine Nummer, Kartennummern auf die letzten 4 Stellen gekürzt, Alive-Meldungen ignoriert; neue Datenpunkte access.grantedPerson / deniedPerson, readers.*.lastPerson"
@@ -74,7 +78,9 @@
     "rawLog": true,
     "keep": 50,
     "allowControl": false,
-    "rules": []
+    "rules": [],
+    "alarmLinks": [],
+    "alarmNotify": ""
   },
   "encryptedNative": [
     "password"

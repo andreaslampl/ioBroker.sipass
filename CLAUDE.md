@@ -79,6 +79,16 @@ reader disarm the NOX alarm system (ioBroker.nox_alarmzentrale) - SiPass can arm
   ObjectToken, `maskCards()` (digit runs >= 8 -> …last4) for states AND the raw log, Service/SubType 35 "Alive" (Location
   "DAMS-Service") ignored. States access.*Person, readers.*.lastPerson. Test with the real shape (anonymised).
 
+- 0.3.0: owner liked the suggested access <-> alarm extensions -> `lib/alarmlink.js` `AlarmLink` (config `alarmLinks`
+  [{enabled, name, armed (objectId, e.g. nox_alarmzentrale.0.areas.1.armed), disarmReaders, armReaders, double, persons,
+  times}], `alarmNotify` (smartview.N.push.message -> JSON {title, text}, else text)): granted at a disarm reader while
+  armed -> false; at an arm reader while unarmed -> true only if sibling `ready` is not false (else message with
+  `openInputs`); card twice within 10 s while unarmed (pending.wasArmed false) -> arm; persons / time windows
+  (`parseTimes`, over midnight counts for the start day); check after 8 s / 30 s (exit delay) -> message incl. sibling
+  `error`; denied booking at a linked reader while armed -> message; 5 s per area; only with allowControl. States
+  alarm.lastAction/Text/Person/Area/Time. NOT built: alarm -> SiPass (lock doors) - the CommandType values for that are
+  not known (swagger on the owner's PC); NOX arming via Modbus not yet confirmed in the field either.
+
 ## Conventions
 
 - UI texts and README in German, code and comments in English.

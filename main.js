@@ -10,6 +10,7 @@ const utils = require('@iobroker/adapter-core');
 const { SiPassClient } = require('./lib/client');
 const { SignalRClient } = require('./lib/signalr');
 const E = require('./lib/events');
+const { AlarmLink } = require('./lib/alarmlink');
 
 const ro = (name, type, role, extra = {}) => ({ type: 'state', common: { name, type, role, read: true, write: false, ...extra }, native: {} });
 
@@ -38,6 +39,12 @@ const OBJECTS = {
     'alarms.count': ro('Anzahl offener Alarme', 'number', 'value'),
     'alarms.list': ro('Offene Alarme', 'string', 'json'),
     readers: { type: 'channel', common: { name: 'Leser' }, native: {} },
+    alarm: { type: 'channel', common: { name: 'Zutritt & Alarmanlage' }, native: {} },
+    'alarm.lastAction': ro('Letzte Schaltung (disarmed / armed / notReady / denied / …Failed)', 'string', 'text'),
+    'alarm.lastText': ro('Letzte Meldung zur Alarmanlage', 'string', 'text'),
+    'alarm.lastPerson': ro('Letzte Schaltung: Person', 'string', 'text'),
+    'alarm.lastArea': ro('Letzte Schaltung: Bereich', 'string', 'text'),
+    'alarm.lastTime': ro('Letzte Schaltung: Zeit', 'number', 'date'),
 };
 
 const READER_STATES = {
@@ -102,6 +109,22 @@ class SiPass extends utils.Adapter {
             this.setState('info.connection', false, true);
             this.later('connect', () => this.connect(), 2000);
         });
+        this.alarm = new AlarmLink({
+            links: this.config.alarmLinks,
+            read: async id => {
+                const st = await this.getForeignStateAsync(id).catch(() => null);
+                return st ? st.val : undefined;
+            },
+            write: (id, val) => this.setForeignStateAsync(id, val, false),
+            notify: (title, text) => this.alarmNotify(title, text),
+            done: a => this.alarmDone(a),
+            control: Boolean(this.config.allowControl),
+            log: this.log,
+            ...(this.alarmTiming || {}),
+        });
+        if (this.alarm.size) {
+            this.log.info(`Zutritt & Alarmanlage: ${this.alarm.links.map(l => l.name).join(', ')}${this.config.allowControl ? '' : ' (nur Anzeige im Log: "Steuern erlauben" ist aus)'}`);
+        }
         if (this.rules.length && !this.config.allowControl) {
             this.log.info(`${this.rules.length} Regel(n) eingetragen, aber "Steuern erlauben" ist aus - Regeln werden nur im Log angezeigt`);
         }
@@ -287,6 +310,28 @@ class SiPass extends utils.Adapter {
         if (ev.granted) {
             await this.runRules(ev, reader ? reader.name : '');
         }
+        if (this.alarm && this.alarm.size && (ev.granted || ev.denied)) {
+            await this.alarm.onAccess(ev, reader ? reader.name : '');
+        }
+    }
+
+    /** message about the alarm system: log, state, and the chosen data point (SmartView push.message gets JSON) */
+    async alarmNotify(title, text) {
+        this.log.info(`${title}: ${text}`);
+        await this.setState('alarm.lastText', text, true);
+        const target = String(this.config.alarmNotify || '').trim();
+        if (!target) {
+            return;
+        }
+        const val = /^smartview\.\d+\.push\.message$/.test(target) ? JSON.stringify({ title, text }) : text;
+        await this.setForeignStateAsync(target, val, false).catch(err => this.log.warn(`Meldung an ${target}: ${err.message}`));
+    }
+
+    async alarmDone(a) {
+        await this.setState('alarm.lastAction', a.action, true);
+        await this.setState('alarm.lastPerson', a.person || '', true);
+        await this.setState('alarm.lastArea', a.link, true);
+        await this.setState('alarm.lastTime', Date.now(), true);
     }
 
     /** granted access -> rules (only with allowControl; the same rule at most every 5 s) */
@@ -324,6 +369,9 @@ class SiPass extends utils.Adapter {
     async onUnload(callback) {
         this.stopped = true;
         try {
+            if (this.alarm) {
+                this.alarm.stop();
+            }
             for (const t of Object.values(this.timers)) {
                 clearTimeout(t);
             }
